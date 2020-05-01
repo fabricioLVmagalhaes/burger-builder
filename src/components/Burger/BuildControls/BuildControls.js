@@ -11,15 +11,17 @@ const controls = [
 ];
 
 const buildControls = (props) => (
-<div className={styles.BuildControls}>
-  {controls.map(ctrl => (
-    <BuildControl 
-      key={ctrl.label}
-      label={ctrl.label}
-      added={()=>props.ingredientsAdded(ctrl.type)}
-    />
-  ))}
-</div>
+  <div className={styles.BuildControls}>
+    {controls.map((ctrl) => (
+      <BuildControl
+        key={ctrl.label}
+        label={ctrl.label}
+        added={() => props.ingredientsAdded(ctrl.type)}
+        removed={() => props.ingredientsRemoved(ctrl.type)}
+        disabled={props.disabled[ctrl.type]}
+      />
+    ))}
+  </div>
 );
 
 export default buildControls;
