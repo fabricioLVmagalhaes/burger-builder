@@ -5,6 +5,7 @@ import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
 import axios from '../../axios-orders';
 
 const INGREDIENT_PRICES = {
@@ -96,7 +97,7 @@ class BugerBuilder extends Component {
       deliveryMethod: 'para ontem!',
     };
     axios
-      .post('/orders.json', order)
+      .post('/orders', order)
       .then((response) => {
         this.setState({ loading: false, purchasing: false });
       })
@@ -145,4 +146,4 @@ class BugerBuilder extends Component {
   }
 }
 
-export default BugerBuilder;
+export default withErrorHandler(BugerBuilder, axios);
