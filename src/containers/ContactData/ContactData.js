@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Button from '../../components/UI/Button/Button';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import styles from './ContactData.module.css';
@@ -16,10 +17,10 @@ class ContactData extends Component {
         },
         value: '',
         validation: {
-          required: true
+          required: true,
         },
         valid: false,
-        touched: false
+        touched: false,
       },
       street: {
         elementType: 'input',
@@ -29,10 +30,10 @@ class ContactData extends Component {
         },
         value: '',
         validation: {
-          required: true
+          required: true,
         },
         valid: false,
-        touched: false
+        touched: false,
       },
       zipCode: {
         elementType: 'input',
@@ -44,10 +45,10 @@ class ContactData extends Component {
         validation: {
           required: true,
           minLength: 5,
-          maxLength: 5
+          maxLength: 5,
         },
         valid: false,
-        touched: false
+        touched: false,
       },
       country: {
         elementType: 'input',
@@ -57,10 +58,10 @@ class ContactData extends Component {
         },
         value: '',
         validation: {
-          required: true
+          required: true,
         },
         valid: false,
-        touched: false
+        touched: false,
       },
       email: {
         elementType: 'input',
@@ -70,10 +71,10 @@ class ContactData extends Component {
         },
         value: '',
         validation: {
-          required: true
+          required: true,
         },
         valid: false,
-        touched: false
+        touched: false,
       },
       deliveryMethod: {
         elementType: 'select',
@@ -85,7 +86,7 @@ class ContactData extends Component {
         },
         value: 'fastest',
         validation: {},
-        valid: true
+        valid: true,
       },
     },
     formIsValid: false,
@@ -95,14 +96,16 @@ class ContactData extends Component {
   orderHandler = (event) => {
     event.preventDefault();
     this.setState({ loading: true });
-    const formData = {}
+    const formData = {};
     for (let formElementIdentifier in this.state.orderForm) {
-      formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
+      formData[formElementIdentifier] = this.state.orderForm[
+        formElementIdentifier
+      ].value;
     }
     const order = {
-      ingredients: this.props.ingredients,
+      ingredients: this.props.ings,
       price: this.props.price,
-      orderData: formData
+      orderData: formData,
     };
     axios
       .post('/orders.json', order)
@@ -115,15 +118,15 @@ class ContactData extends Component {
       });
   };
 
-  checkValidity(value, rules){
+  checkValidity(value, rules) {
     let isValid = true;
-    if(rules.required) {
+    if (rules.required) {
       isValid = value.trim() !== '' && isValid;
     }
-    if(rules.minLength) {
+    if (rules.minLength) {
       isValid = value.trim().length >= rules.minLength && isValid;
     }
-    if(rules.maxLength) {
+    if (rules.maxLength) {
       isValid = value.trim().length <= rules.maxLength && isValid;
     }
     return isValid;
@@ -135,14 +138,17 @@ class ContactData extends Component {
     };
     const updatedFormElement = { ...updatedOrderForm[inputIdentifier] };
     updatedFormElement.value = event.target.value;
-    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
-    updatedFormElement.touched =  true;
+    updatedFormElement.valid = this.checkValidity(
+      updatedFormElement.value,
+      updatedFormElement.validation
+    );
+    updatedFormElement.touched = true;
     updatedOrderForm[inputIdentifier] = updatedFormElement;
     let formIsValid = true;
-    for(let inputIdentifier in updatedOrderForm) {
+    for (let inputIdentifier in updatedOrderForm) {
       formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
     }
-    this.setState({orderForm: updatedOrderForm, formIsValid: formIsValid})
+    this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
   };
 
   render() {
@@ -184,4 +190,11 @@ class ContactData extends Component {
   }
 }
 
-export default ContactData;
+const mapStateToProps = (state) => {
+  return {
+    ings: state.ingredients,
+    price: state.totalPrice,
+  };
+};
+
+export default connect(mapStateToProps)(ContactData);

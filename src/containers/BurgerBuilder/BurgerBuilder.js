@@ -8,8 +8,7 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import axios from '../../axios-orders';
-import * as actionTypes from '../../store/actions'
-
+import * as actionTypes from '../../store/actions';
 
 class BugerBuilder extends Component {
   state = {
@@ -37,8 +36,8 @@ class BugerBuilder extends Component {
       .reduce((sum, el) => {
         return sum + el;
       }, 0);
-    return sum > 0 ;
-  }  
+    return sum > 0;
+  }
 
   purchaseHandler = () => {
     this.setState({ purchasing: true });
@@ -49,22 +48,7 @@ class BugerBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
-    // alert('here you go!!');
-
-    const queryParams = [];
-    for (let i in this.state.ingredients) {
-      queryParams.push(
-        encodeURIComponent(i) +
-          '=' +
-          encodeURIComponent(this.state.ingredients[i])
-      );
-    }
-    queryParams.push('price=' + this.props.price);
-    const queryString = queryParams.join('&');
-    this.props.history.push({
-      pathname: '/checkout',
-      search: '?' + queryString,
-    });
+    this.props.history.push('/checkout');
   };
 
   render() {
@@ -121,17 +105,25 @@ class BugerBuilder extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     ings: state.ingredients,
-    price: state.totalPrice
-  }
-}
-const mapDispatchToProps = dispatch => {
+    price: state.totalPrice,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
   return {
-    onIngredientAdded: (ingName) => dispatch({type: actionTypes.ADD_INGREDIENT, ingredientName: ingName}),
-    onIngredientRemoved: (ingName) => dispatch({type: actionTypes.REMOVE_INGREDIENT, ingredientName: ingName})
-  }
-}
+    onIngredientAdded: (ingName) =>
+      dispatch({ type: actionTypes.ADD_INGREDIENT, ingredientName: ingName }),
+    onIngredientRemoved: (ingName) =>
+      dispatch({
+        type: actionTypes.REMOVE_INGREDIENT,
+        ingredientName: ingName,
+      }),
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)( withErrorHandler(BugerBuilder, axios));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(BugerBuilder, axios));
